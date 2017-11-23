@@ -1,74 +1,68 @@
-@extends('layouts.admin')
+@extends('layouts.admin') @section('content')
+<h1>Comments</h1>
 
-@section('content')
-  <h1>Comments</h1>
+@if ($comments)
+<table class="table">
+	<thead>
+		<tr>
+			<th>Id</th>
+			<th>Autor</th>
+			<th>Email</th>
+			<th>Treść</th>
+			{{--
+			<th>Link</th> --}}
+			<th>Stan</th>
+			<th>Usuń</th>
+		</tr>
+	</thead>
+	<tbody>
 
-  @if ($comments)
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Id</th>
-          <th>Author</th>
-          <th>Email</th>
-          <th>Body</th>
-          <th>Link</th>
-          <th>Approve/Un...</th>
-          <th>Delete</th>
-        </tr>
-      </thead>
-      <tbody>
+		@foreach ($comments as $comment)
+		<tr>
+			<td>{{$comment->id}}</td>
+			<td>{{$comment->author}}</td>
+			<td>{{$comment->email}}</td>
+			<td>{{$comment->body}}</td>
+			{{--
+			<td>
+				<a href="{{route('home.post',$comment->post->id)}}">Link</a>
+			</td> --}}
 
-        @foreach ($comments as $comment)
-          <tr>
-            <td>{{$comment->id}}</td>
-            <td>{{$comment->author}}</td>
-            <td>{{$comment->email}}</td>
-            <td>{{$comment->body}}</td>
-            <td><a href="{{route('home.post',$comment->post->id)}}">Link</a></td>
+			<td>
+				@if ($comment->is_active == 1) {!! Form::open(['method'=>'PATCH', 'action'=> ['PostCommentsController@update', $comment->id]])
+				!!}
+				<input type="hidden" name="is_active" value="0">
 
-            <td>
-              @if ($comment->is_active == 1)
+				<div class="form-group">
+					{!!Form::submit('Odrzuć', ['class'=>'btn btn-success'])!!}
+				</div>
+				{!! Form::close() !!} @else {!! Form::open(['method'=>'PATCH', 'action'=> ['PostCommentsController@update', $comment->id]])
+				!!}
+				<input type="hidden" name="is_active" value="1">
 
-                {!! Form::open(['method'=>'PATCH', 'action'=> ['PostCommentsController@update', $comment->id]]) !!}
-                  <input type="hidden" name="is_active" value="0">
+				<div class="form-group">
+					{!!Form::submit('Akceptuj', ['class'=>'btn btn-info'])!!}
+				</div>
+				{!! Form::close() !!} @endif
+			</td>
 
-                  <div class="form-group">
-                    {!!Form::submit('Un-approve', ['class'=>'btn btn-success'])!!}
-                  </div>
-                {!! Form::close() !!}
+			<td>
 
-                @else
+				{!! Form::open(['method'=>'DELETE', 'action'=> ['PostCommentsController@destroy', $comment->id]]) !!}
 
-                  {!! Form::open(['method'=>'PATCH', 'action'=> ['PostCommentsController@update', $comment->id]]) !!}
-                    <input type="hidden" name="is_active" value="1">
+				<div class="form-group">
+					{!!Form::submit('Usuń', ['class'=>'btn btn-danger'])!!}
+				</div>
+				{!! Form::close() !!}
 
-                    <div class="form-group">
-                      {!!Form::submit('Approve', ['class'=>'btn btn-info'])!!}
-                    </div>
-                  {!! Form::close() !!}
+			</td>
 
-              @endif
-            </td>
+		</tr>
+		@endforeach
+	</tbody>
+</table>
 
-            <td>
+@else
+<h1 class="text-center">No Comments</h1>
 
-              {!! Form::open(['method'=>'DELETE', 'action'=> ['PostCommentsController@destroy', $comment->id]]) !!}
-
-                <div class="form-group">
-                  {!!Form::submit('Delete', ['class'=>'btn btn-danger'])!!}
-                </div>
-              {!! Form::close() !!}
-
-            </td>
-
-          </tr>
-        @endforeach
-      </tbody>
-    </table>
-
-    @else
-      <h1 class="text-center">No Comments</h1>
-
-  @endif
-
-@stop
+@endif @stop

@@ -51,13 +51,13 @@ class CommentRepliesController extends Controller
         'comment_id' => $request->comment_id,
         'author' => $user->name,
         'email' => $user->email,
-        'photo' => $user->photo->file,
+        // 'photo' => $user->photo->file,
         'body' => $request->body
       ];
 
       CommentReply::create($data);
 
-      $request->session()->flash('reply_message','Your reply has been submitted');
+      $request->session()->flash('reply_message','Wiadmość wysłana.');
 
       return redirect()->back();
     }

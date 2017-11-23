@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-
-use App\Http\Requests;
-use App\Comment;
-use App\Post;
 use Auth;
+
+use App\Post;
+use App\Comment;
+use App\Http\Requests;
+use Illuminate\Http\Request;
 
 class PostCommentsController extends Controller
 {
@@ -46,13 +46,13 @@ class PostCommentsController extends Controller
           'post_id' => $request->post_id,
           'author' => $user->name,
           'email' => $user->email,
-          'photo' => $user->photo->file,
+        //   'photo' => $user->photo->file,
           'body' => $request->body
         ];
 
         Comment::create($data);
 
-        $request->session()->flash('comment_message','Your message has been submitted');
+        $request->session()->flash('comment_message','Wiadmość wysłana.');
 
         return redirect()->back();
     }
